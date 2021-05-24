@@ -13,6 +13,15 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
+if os.environ.get('DJANGO_DEBUG') is None:
+    DEBUG = False
+    print("running with DEBUG = "+ str(DEBUG))
+else:
+    DEBUG = os.environ.get('DJANGO_DEBUG')
+    print("running with DEBUG = "+ DEBUG)
+
+ALLOWED_HOSTS = ["*"]
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,15 +33,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-6r(!s3gdfa47wti=6o!$7e26w)4x)pz2m=8dzt_m07=wv!g1@5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
-# Configuration
 
 STATIC_URL = '/static/'
 DATA_DIR = 'data'
 STATIC_ROOT = os.path.join(DATA_DIR, 'static')
+
+# if DEBUG:
+
+#   STATICFILES_DIRS = [os.path.join(DATA_DIR, 'static')]
+
+# else:
+
+#   #STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#   STATIC_ROOT = os.path.join(DATA_DIR, 'static')
 
 
 # Application definition
@@ -86,7 +100,8 @@ WSGI_APPLICATION = 'scratchproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        #'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME':  os.path.join(DATA_DIR+'/db/', 'db.sqlite3'),
     }
 }
 
