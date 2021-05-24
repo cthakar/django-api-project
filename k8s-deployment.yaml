@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scratch-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scratch-api
+  template:
+    metadata:
+      labels:
+        app: scratch-api
+    spec:
+      volumes:
+        - name: scratch-api-storage
+          hostPath:
+            path: /tmp/
+            type: Directory
+      containers:
+      - name: scratch-api
+        image: cthakar/scratch-api-demo:2.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+         - name: scratch-api-storage
+           mountPath: /app/src/data/db/
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scratch-api-svc
+spec:
+  type: NodePort
+  selector:
+    app: scratch-api
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30007
